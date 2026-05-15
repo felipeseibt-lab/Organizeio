@@ -1219,7 +1219,7 @@ function renderJournal(){
         ${isDaily?`<span class="daily-badge daily">🎙 Daily P&D</span>`:''}
         ${dow===5?`<span class="daily-badge" style="background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)">✅ Check-Out</span>`:''}
       </div>
-      <div class="day-card-chevron ${isToday||isDaily?'open':''}" id="chev-${key}">
+      <div class="day-card-chevron" id="chev-${key}">
         <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
       </div>`;
     head.onclick=()=>{
@@ -1232,7 +1232,7 @@ function renderJournal(){
 
     // BODY
     const cbody=document.createElement('div');
-    cbody.className='day-card-body'+(isToday||isDaily?' open':'');
+    cbody.className='day-card-body';
     cbody.id='body-'+key;
 
     // — What I did
