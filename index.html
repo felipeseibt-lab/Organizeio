@@ -396,7 +396,35 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
 .wiki-cat-select:focus{border-color:var(--accent);}
 .wiki-cat-select option{background:var(--surface2);}
 
-/* ══ GOOGLE AUTH ══ */
+/* ══ DEMANDAS CHECKUP ══ */
+.demand-check-wrap{display:flex;align-items:center;gap:10px;margin-bottom:0;}
+.demand-checkbox{width:20px;height:20px;border:2px solid var(--border2);border-radius:6px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.demand-checkbox:hover{border-color:var(--green-text);}
+.demand-checkbox.done{background:var(--green-text);border-color:var(--green-text);}
+.demand-checkbox.done::after{content:'✓';font-size:12px;color:#fff;font-weight:700;}
+/* Done mini-calendar */
+.done-day-name{text-align:center;font-size:9px;color:var(--text3);padding:4px 0;font-family:'Roboto',monospace;text-transform:uppercase;letter-spacing:.4px;}
+.done-day{text-align:center;font-size:12px;color:var(--text2);cursor:pointer;border-radius:7px;min-height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all .12s;border:1px solid transparent;}
+.done-day:hover:not(.empty){background:var(--surface2);color:var(--text);}
+.done-day.empty{cursor:default;}
+.done-day.has-done{background:var(--green-bg);border-color:var(--green-border);color:var(--green-text);font-weight:600;}
+.done-day.today-d{color:var(--accent2);font-weight:600;}
+.done-day.selected-d{background:var(--accent)!important;color:#fff!important;border-color:var(--accent2)!important;font-weight:600;}
+/* Stage items */
+.stage-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text);}
+.stage-item-name{flex:1;}
+.stage-item-date{font-size:11px;color:var(--text3);font-family:'Roboto',monospace;}
+.stage-rm{background:none;border:none;cursor:pointer;color:var(--text3);display:flex;padding:2px;}
+.stage-rm:hover{color:var(--red-text);}
+.stage-rm svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
+/* Project deadline badge */
+.proj-deadline-badge{font-size:10px;padding:2px 8px;border-radius:8px;background:var(--orange-bg);color:var(--orange-text);border:1px solid var(--orange-border);font-weight:500;white-space:nowrap;}
+.proj-deadline-badge.overdue{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border);}
+.proj-stage-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);}
+.proj-stage-row:last-child{border-bottom:none;}
+.proj-stage-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.proj-stage-name{flex:1;}
+.proj-stage-date{font-size:10px;color:var(--text3);font-family:'Roboto',monospace;}
 .gcal-btn{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;font-family:'Roboto',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .gcal-btn:hover{background:var(--surface3);color:var(--text);}
 .gcal-btn svg{width:14px;height:14px;flex-shrink:0;}
@@ -435,8 +463,12 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
       Diário Semanal
     </button>
     <button class="tab-btn" onclick="switchTab('notes',this)">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Anotações
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Demandas
+    </button>
+    <button class="tab-btn" onclick="switchTab('done',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+      Concluídas
     </button>
     <button class="tab-btn" onclick="switchTab('projects',this)">
       <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
@@ -510,30 +542,33 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
   </div>
 </div>
 
-<!-- NOTES PANEL -->
+<!-- DEMANDAS PANEL -->
 <div class="panel" id="panel-notes">
   <div class="notes-panel-wrap">
     <div class="notes-top">
-      <div class="notes-title">Anotações de Eventos</div>
+      <div class="notes-title">Demandas</div>
       <button class="btn-new" onclick="openNoteForm()">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Nova anotação
+        Nova demanda
       </button>
     </div>
-    <p class="notes-empty" id="notes-empty">Nenhuma anotação ainda. Crie a primeira!</p>
+    <p class="notes-empty" id="notes-empty">Nenhuma demanda ainda. Crie a primeira!</p>
     <div class="note-card" id="note-new-form" style="display:none;">
       <div style="padding:14px;display:flex;flex-direction:column;gap:10px;">
-        <div><div class="note-field-label">Título do evento</div><input class="proj-inp" id="nn-title" placeholder="Ex: Apresentação do fluxo para o cliente…"></div>
-        <div><div class="note-field-label">Data</div><input type="date" class="proj-inp" id="nn-date"></div>
-        <div><div class="note-field-label">Categoria</div>
-          <select class="proj-select" id="nn-cat">
-            <option value="client">🤝 Reunião com Cliente</option>
-            <option value="general">📌 Geral</option>
-            <option value="red">🔴 Urgente</option>
-            <option value="purple">⭐ Destaque</option>
-          </select>
+        <div><div class="note-field-label">Título da demanda</div><input class="proj-inp" id="nn-title" placeholder="Ex: Apresentação do fluxo para o cliente…"></div>
+        <div class="proj-row">
+          <div class="proj-field"><div class="note-field-label">Data</div><input type="date" class="proj-inp" id="nn-date"></div>
+          <div class="proj-field"><div class="note-field-label">Categoria</div>
+            <select class="proj-select" id="nn-cat">
+              <option value="client">🤝 Reunião com Cliente</option>
+              <option value="general">📌 Geral</option>
+              <option value="red">🔴 Urgente</option>
+              <option value="purple">⭐ Destaque</option>
+            </select>
+          </div>
         </div>
-        <div><div class="note-field-label">Observações</div><textarea class="note-ta" id="nn-obs" placeholder="O que aconteceu, decisões tomadas, próximos passos…"></textarea></div>
+        <div><div class="note-field-label">Tags <span style="color:var(--text3);font-size:9px;">separadas por vírgula — ex: Felipe, MQ Hair, BMC</span></div><input class="proj-inp" id="nn-tags" placeholder="cliente, time, pessoa…"></div>
+        <div><div class="note-field-label">Observações</div><textarea class="note-ta" id="nn-obs" placeholder="Detalhes, links, próximos passos…"></textarea></div>
         <div style="display:flex;gap:8px;">
           <button class="note-save-btn" onclick="saveNewNote()">Salvar</button>
           <button class="note-del-btn" onclick="closeNoteForm()">Cancelar</button>
@@ -541,6 +576,26 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
       </div>
     </div>
     <div id="notes-list"></div>
+  </div>
+</div>
+
+<!-- CONCLUÍDAS PANEL -->
+<div class="panel" id="panel-done">
+  <div class="notes-panel-wrap">
+    <div class="notes-top">
+      <div class="notes-title">Demandas Concluídas</div>
+    </div>
+    <!-- Mini calendar -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <button class="nav-btn" onclick="donePrevMonth()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <span id="done-month-label" style="font-size:13px;font-weight:500;color:var(--text);font-family:'Google Sans',sans-serif;"></span>
+        <button class="nav-btn" onclick="doneNextMonth()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;" id="done-cal-grid"></div>
+    </div>
+    <div id="done-day-label" style="font-size:11px;color:var(--text3);margin-bottom:8px;font-family:'Roboto',monospace;"></div>
+    <div id="done-list"></div>
   </div>
 </div>
 
@@ -554,10 +609,10 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
         Novo projeto
       </button>
     </div>
-    <p class="proj-subtitle">Acompanhe seus projetos, observações e tarefas</p>
+    <p class="proj-subtitle">Datas de entrega são registradas automaticamente na Agenda</p>
     <div class="new-proj-form" id="new-proj-form">
       <div class="proj-row">
-        <div class="proj-field"><div class="proj-field-label">Nome</div><input class="proj-inp" id="np-name" placeholder="Ex: Entender e apresentar o fluxo…"></div>
+        <div class="proj-field"><div class="proj-field-label">Nome do projeto</div><input class="proj-inp" id="np-name" placeholder="Ex: Entender e apresentar o fluxo…"></div>
         <div class="proj-field" style="max-width:150px;"><div class="proj-field-label">Status</div>
           <select class="proj-select" id="np-status">
             <option value="planejamento">Planejamento</option>
@@ -567,7 +622,16 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
           </select>
         </div>
       </div>
-      <div><div class="proj-field-label">Descrição</div><input class="proj-inp" id="np-desc" placeholder="Uma linha sobre o objetivo…"></div>
+      <div class="proj-row">
+        <div class="proj-field"><div class="proj-field-label">Descrição</div><input class="proj-inp" id="np-desc" placeholder="Uma linha sobre o objetivo…"></div>
+        <div class="proj-field" style="max-width:280px;">
+          <div class="proj-field-label">📅 Data e horário de entrega</div>
+          <div style="display:flex;gap:6px;">
+            <input type="date" class="proj-inp" id="np-deadline" style="flex:1;">
+            <input type="time" class="proj-inp" id="np-deadline-time" style="width:100px;">
+          </div>
+        </div>
+      </div>
       <div><div class="proj-field-label">Cor</div>
         <div class="proj-color-opts" id="np-colors">
           <div class="proj-color-opt selected" data-color="#4a9eff" style="background:#4a9eff;" onclick="selectProjColor(this)"></div>
@@ -579,6 +643,18 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
         </div>
       </div>
       <div><div class="proj-field-label">Objetivo / contexto</div><textarea class="proj-ta" id="np-obj" placeholder="Por que esse projeto existe? O que você precisa entender ou entregar?"></textarea></div>
+      <div><div class="proj-field-label">Tags <span style="color:var(--text3);font-size:9px;">separadas por vírgula — ex: Felipe, MQ Hair, BMC</span></div><input class="proj-inp" id="np-tags" placeholder="cliente, time, pessoa…"></div>
+      <!-- Stages -->
+      <div>
+        <div class="proj-field-label" style="margin-bottom:6px;">Etapas (opcional) <span style="font-size:9px;color:var(--text3);">cada etapa cria um evento na agenda</span></div>
+        <div id="np-stages-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;"></div>
+        <div style="display:flex;gap:6px;">
+          <input class="proj-inp" id="np-stage-name" placeholder="Nome da etapa…" style="flex:1;">
+          <input type="date" class="proj-inp" id="np-stage-date" style="width:140px;">
+          <input type="time" class="proj-inp" id="np-stage-time" style="width:95px;">
+          <button class="proj-del-btn" onclick="addStageToForm()" style="white-space:nowrap;padding:6px 12px;border-color:var(--accent);color:var(--blue-text);">+ Etapa</button>
+        </div>
+      </div>
       <div style="display:flex;gap:8px;">
         <button class="proj-save-btn" onclick="saveNewProject()">Criar projeto</button>
         <button class="proj-del-btn" onclick="closeNewProjForm()">Cancelar</button>
@@ -647,7 +723,22 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
           <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Tags (separadas por vírgula)</div>
           <input class="wiki-new-inp" id="wn-tags" placeholder="ex: webhook, http, autenticação">
         </div>
-        <textarea class="wiki-content-area" id="wn-content" placeholder="Descreva a solução, cole o código, links úteis, passos..."></textarea>
+        <div>
+          <div style="font-size:9px;color:var(--red-text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">🔴 Problema</div>
+          <textarea class="wiki-content-area" id="wn-problema" placeholder="Descreva o problema que você estava enfrentando…" style="min-height:70px;"></textarea>
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Soluções <span style="color:var(--text3);font-size:9px;text-transform:none;letter-spacing:0;">(pode adicionar mais de uma)</span></div>
+          <div id="wn-solucoes-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;"></div>
+          <div style="display:flex;gap:6px;">
+            <textarea class="wiki-content-area" id="wn-solucao-inp" placeholder="Descreva uma solução, cole código, passos…" style="min-height:60px;flex:1;"></textarea>
+            <button class="wiki-save-btn" onclick="addSolucaoToForm()" style="align-self:flex-start;white-space:nowrap;">+ Solução</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Dica / Observação <span style="color:var(--text3);font-size:9px;text-transform:none;letter-spacing:0;">(opcional)</span></div>
+          <textarea class="wiki-content-area" id="wn-dica" placeholder="Dica extra, link útil, observação importante…" style="min-height:60px;"></textarea>
+        </div>
         <div style="display:flex;gap:8px;">
           <button class="wiki-save-btn" onclick="saveNewWikiEntry()">Salvar</button>
           <button class="wiki-del-btn" onclick="closeWikiForm()">Cancelar</button>
@@ -656,6 +747,24 @@ body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);disp
 
       <p class="wiki-empty" id="wiki-empty" style="display:none">Nenhum registro encontrado.</p>
       <div id="wiki-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONCLUDE DEMAND POPUP -->
+<div class="overlay" id="conclude-popup">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:360px;">
+    <div class="modal-title" style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:20px;">✅</span> Concluir demanda
+    </div>
+    <p id="conclude-title" style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;"></p>
+    <div class="mf">
+      <label>Em qual dia foi concluída?</label>
+      <input type="date" id="conclude-date">
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="closeConcludePopup()">Cancelar</button>
+      <button class="btn-save" onclick="confirmConclude()" style="background:var(--green-text);">✓ Confirmar conclusão</button>
     </div>
   </div>
 </div>
@@ -1128,8 +1237,12 @@ document.addEventListener('click',e=>{
   if(!document.getElementById('ev-popup').contains(e.target)&&!e.target.closest('.ev')&&!e.target.closest('.month-ev'))
     closePopup();
   if(e.target===document.getElementById('modal')) closeModal();
+  if(e.target===document.getElementById('conclude-popup')) closeConcludePopup();
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closePopup();}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closePopup();closeConcludePopup();}
+  if(e.key==='Enter'&&document.getElementById('conclude-popup').classList.contains('open')) confirmConclude();
+});
 
 /* ═══════════════════════════════════════════
    PANEL SWITCH
@@ -1137,7 +1250,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeP
 function switchTab(id,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  const panelMap={cal:'panel-cal',journal:'panel-journal',notes:'panel-notes',projects:'panel-projects',wiki:'panel-wiki'};
+  const panelMap={cal:'panel-cal',journal:'panel-journal',notes:'panel-notes',done:'panel-done',projects:'panel-projects',wiki:'panel-wiki'};
   document.getElementById(panelMap[id]).classList.add('active');
   btn.classList.add('active');
   const isCalendar=id==='cal';
@@ -1145,6 +1258,7 @@ function switchTab(id,btn){
   document.getElementById('nav-grp').style.display=isCalendar?'flex':'none';
   if(id==='journal') renderJournal();
   if(id==='notes') renderNotes();
+  if(id==='done') renderDoneTab();
   if(id==='projects') renderProjects();
   if(id==='wiki') renderWiki();
 }
@@ -1271,14 +1385,42 @@ function renderJournal(){
     if(!isFuture) didSec.appendChild(didAdd);
     cbody.appendChild(didSec);
 
-    // — Daily summary (only for Tue/Thu) — uses only journal entries, no calendar events
+    // — Demandas concluídas neste dia (puxado de noteItems)
+    const dayStr=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const doneDemands=noteItems.filter(n=>n.done&&n.doneDate===dayStr);
+    if(doneDemands.length){
+      const doneSec=document.createElement('div');
+      doneSec.innerHTML=`<div class="day-section-label" style="color:var(--green-text);">✅ Demandas concluídas</div>`;
+      const doneList=document.createElement('div');
+      doneList.style.cssText='display:flex;flex-direction:column;gap:5px;margin-top:4px;';
+      doneDemands.forEach(n=>{
+        const row=document.createElement('div');
+        row.style.cssText='display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);';
+        row.innerHTML=`
+          <div style="width:14px;height:14px;background:var(--green-text);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="font-size:9px;color:#fff;font-weight:700;">✓</span>
+          </div>
+          <span style="flex:1;text-decoration:line-through;color:var(--text3);">${n.title}</span>
+          ${(n.tags||[]).length?`<span style="font-size:10px;color:var(--text3);">${n.tags.map(t=>'#'+t).join(' ')}</span>`:''}`;
+        doneList.appendChild(row);
+      });
+      doneSec.appendChild(doneList);
+      cbody.appendChild(doneSec);
+    }
+
+    // — Daily summary (only for Tue/Thu) — uses journal entries + concluded demands
     if(isDaily&&reportRange.length){
       const sumSec=document.createElement('div');
       const rangeLabels=reportRange.map(rd=>`${DS_FULL[rd.getDay()]} ${rd.getDate()}/${(rd.getMonth()+1).toString().padStart(2,'0')}`).join(', ');
       const summaryLines=reportRange.map(rd=>{
         const rk=jKey(rd);
         const rjd=getJournalDay(rd);
-        const items=[...rjd.did];
+        // Manual diary entries
+        const manualItems=[...rjd.did];
+        // Concluded demands on that day
+        const rdStr=`${rd.getFullYear()}-${String(rd.getMonth()+1).padStart(2,'0')}-${String(rd.getDate()).padStart(2,'0')}`;
+        const rdDone=noteItems.filter(n=>n.done&&n.doneDate===rdStr).map(n=>`[✅ Demanda] ${n.title}`);
+        const items=[...manualItems,...rdDone];
         if(!items.length) return `📅 ${DS_FULL[rd.getDay()]} ${rd.getDate()}/${(rd.getMonth()+1).toString().padStart(2,'0')}: (nada registrado)`;
         return `📅 ${DS_FULL[rd.getDay()]} ${rd.getDate()}/${(rd.getMonth()+1).toString().padStart(2,'0')}:\n`+items.map(i=>`  • ${i}`).join('\n');
       }).join('\n\n');
@@ -1355,10 +1497,11 @@ function saveNewNote(){
     date:document.getElementById('nn-date').value,
     cat:document.getElementById('nn-cat').value,
     obs:document.getElementById('nn-obs').value,
+    tags:document.getElementById('nn-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
   };
   noteItems.unshift(item);
   sv('ag4_notes',noteItems); sv('ag4_nid',noteIdCounter);
-  ['nn-title','nn-date','nn-obs'].forEach(id=>document.getElementById(id).value='');
+  ['nn-title','nn-date','nn-obs','nn-tags'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('note-new-form').style.display='none';
   renderNotes();
 }
@@ -1366,27 +1509,35 @@ function saveNewNote(){
 function renderNotes(){
   const list=document.getElementById('notes-list');
   const empty=document.getElementById('notes-empty');
-  if(!noteItems.length){empty.style.display='block';list.innerHTML='';return;}
+  const active=noteItems.filter(n=>!n.done);
+  if(!active.length){empty.style.display='block';list.innerHTML='';return;}
   empty.style.display='none';
-  list.innerHTML=noteItems.map(n=>`
-    <div class="note-card">
+  list.innerHTML=active.map(n=>`
+    <div class="note-card" id="ncard-${n.id}">
       <div class="note-card-head" onclick="toggleNoteCard('nc-${n.id}','nchev-${n.id}')">
-        <div class="note-card-icon ${n.cat}">${NOTE_ICONS[n.cat]||'📌'}</div>
-        <div style="flex:1;min-width:0;">
-          <div class="note-card-title">
-            ${n.title}
-            ${n.fromEvent?`<span class="note-from-event-badge">📅 reunião</span>`:''}
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;" onclick="event.stopPropagation()">
+          <div class="demand-checkbox ${n.done?'done':''}" onclick="toggleNoteDone(${n.id})" title="Marcar como concluída"></div>
+          <div class="note-card-icon ${n.cat}">${NOTE_ICONS[n.cat]||'📌'}</div>
+          <div style="flex:1;min-width:0;" onclick="toggleNoteCard('nc-${n.id}','nchev-${n.id}')">
+            <div class="note-card-title">${n.title}${n.fromEvent?`<span class="note-from-event-badge">📅 reunião</span>`:''}</div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;">
+              <span class="note-card-sub">${n.date?formatDate(n.date):''} · ${NOTE_LABELS[n.cat]||'Geral'}</span>
+              ${(n.tags||[]).map(t=>`<span class="wiki-tag">#${t}</span>`).join('')}
+            </div>
           </div>
-          <div class="note-card-sub">${n.date?formatDate(n.date):''} · ${NOTE_LABELS[n.cat]||'Geral'}</div>
         </div>
         <div class="note-card-chevron" id="nchev-${n.id}"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
       <div class="note-card-body" id="nc-${n.id}">
         <div><div class="note-field-label">Anotações</div>
-          <textarea class="note-ta" id="nobs-${n.id}" placeholder="Anotações sobre este evento…">${n.obs||''}</textarea>
+          <textarea class="note-ta" id="nobs-${n.id}" placeholder="Detalhes, links, próximos passos…">${n.obs||''}</textarea>
+        </div>
+        <div><div class="note-field-label">Tags</div>
+          <input class="proj-inp" id="ntags-${n.id}" value="${(n.tags||[]).join(', ')}" placeholder="cliente, time, pessoa…" style="font-size:12px;">
         </div>
         <div class="note-card-actions">
           <button class="note-save-btn" onclick="saveNoteObs(${n.id})">Salvar</button>
+          <button class="note-save-btn" style="background:var(--green-text);" onclick="toggleNoteDone(${n.id})">✓ Concluir</button>
           <button class="note-del-btn" onclick="deleteNote(${n.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Excluir</button>
           <span class="note-saved-tag" id="nok-${n.id}">✓ salvo</span>
         </div>
@@ -1401,13 +1552,130 @@ function toggleNoteCard(bodyId,chevId){
 function saveNoteObs(id){
   const n=noteItems.find(x=>x.id===id); if(!n)return;
   n.obs=document.getElementById('nobs-'+id).value;
+  const tagsEl=document.getElementById('ntags-'+id);
+  if(tagsEl) n.tags=tagsEl.value.split(',').map(t=>t.trim()).filter(Boolean);
   sv('ag4_notes',noteItems);
   const tag=document.getElementById('nok-'+id); tag.classList.add('show');
   setTimeout(()=>tag.classList.remove('show'),2000);
 }
 function deleteNote(id){
-  if(!confirm('Excluir esta anotação?'))return;
+  if(!confirm('Excluir esta demanda?'))return;
   noteItems=noteItems.filter(n=>n.id!==id); sv('ag4_notes',noteItems); renderNotes();
+}
+
+function toggleNoteDone(id){
+  const n=noteItems.find(x=>x.id===id); if(!n)return;
+  if(n.done){
+    // Reopening — just toggle back immediately
+    n.done=false; n.doneDate=null;
+    sv('ag4_notes',noteItems);
+    if(doneSelectedDay){
+      const stillHas=noteItems.some(x=>x.done&&x.doneDate===doneSelectedDay);
+      if(!stillHas) doneSelectedDay=null;
+    }
+    renderNotes(); renderDoneTab();
+    if(document.getElementById('panel-journal').classList.contains('active')) renderJournal();
+  } else {
+    // Concluding — ask for date first
+    openConcludePopup(id);
+  }
+}
+
+function openConcludePopup(id){
+  const n=noteItems.find(x=>x.id===id); if(!n)return;
+  const popup=document.getElementById('conclude-popup');
+  document.getElementById('conclude-title').textContent=n.title;
+  document.getElementById('conclude-date').value=new Date().toISOString().slice(0,10);
+  popup.dataset.noteId=id;
+  popup.classList.add('open');
+  document.getElementById('conclude-date').focus();
+}
+
+function closeConcludePopup(){
+  document.getElementById('conclude-popup').classList.remove('open');
+}
+
+function confirmConclude(){
+  const popup=document.getElementById('conclude-popup');
+  const id=parseInt(popup.dataset.noteId);
+  const date=document.getElementById('conclude-date').value;
+  if(!date){alert('Selecione uma data.');return;}
+  const n=noteItems.find(x=>x.id===id); if(!n)return;
+  n.done=true; n.doneDate=date;
+  sv('ag4_notes',noteItems);
+  closeConcludePopup();
+  renderNotes(); renderDoneTab();
+  if(document.getElementById('panel-journal').classList.contains('active')) renderJournal();
+}
+
+/* ── Done tab ── */
+let doneCursor={y:new Date().getFullYear(), m:new Date().getMonth()};
+let doneSelectedDay=null;
+
+function donePrevMonth(){ doneCursor.m--; if(doneCursor.m<0){doneCursor.m=11;doneCursor.y--;} renderDoneTab(); }
+function doneNextMonth(){ doneCursor.m++; if(doneCursor.m>11){doneCursor.m=0;doneCursor.y++;} renderDoneTab(); }
+
+function renderDoneTab(){
+  const {y,m}=doneCursor;
+  // Clear selected day if it no longer has done items
+  if(doneSelectedDay){
+    const stillHas=noteItems.some(n=>n.done&&n.doneDate===doneSelectedDay);
+    if(!stillHas) doneSelectedDay=null;
+  }
+  const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const lbl=document.getElementById('done-month-label');
+  if(lbl) lbl.textContent=`${MONTHS[m]} ${y}`;
+  const grid=document.getElementById('done-cal-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='done-day-name';el.textContent=d;grid.appendChild(el);});
+  const firstDow=new Date(y,m,1).getDay();
+  const dim=new Date(y,m+1,0).getDate();
+  const todayStr=new Date().toISOString().slice(0,10);
+  // build set of days with done items
+  const doneDays=new Set(noteItems.filter(n=>n.done&&n.doneDate&&n.doneDate.startsWith(`${y}-${String(m+1).padStart(2,'0')}`)).map(n=>parseInt(n.doneDate.slice(8,10))));
+  for(let i=0;i<firstDow;i++){const el=document.createElement('div');el.className='done-day empty';grid.appendChild(el);}
+  for(let d=1;d<=dim;d++){
+    const el=document.createElement('div'); el.className='done-day';
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if(ds===todayStr) el.classList.add('today-d');
+    if(doneDays.has(d)) el.classList.add('has-done');
+    if(doneSelectedDay===ds) el.classList.add('selected-d');
+    el.innerHTML=`<span>${d}</span>`;
+    el.onclick=()=>{ doneSelectedDay=ds; renderDoneTab(); };
+    grid.appendChild(el);
+  }
+  // List
+  const dayLabel=document.getElementById('done-day-label');
+  const doneList=document.getElementById('done-list');
+  const done=noteItems.filter(n=>n.done);
+  if(!done.length){
+    if(dayLabel) dayLabel.textContent='';
+    if(doneList) doneList.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic">Nenhuma demanda concluída ainda.</p>';
+    return;
+  }
+  const filtered=doneSelectedDay?done.filter(n=>n.doneDate===doneSelectedDay):done;
+  if(dayLabel) dayLabel.textContent=doneSelectedDay?`Concluídas em ${formatDate(doneSelectedDay)} — ${filtered.length} demanda(s)`:`Todas as concluídas — ${done.length} demanda(s)`;
+  if(!doneList)return;
+  if(!filtered.length){doneList.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic">Nenhuma demanda concluída neste dia.</p>';return;}
+  doneList.innerHTML=filtered.map(n=>`
+    <div class="note-card" style="opacity:.85;">
+      <div class="note-card-head" onclick="toggleNoteCard('dnc-${n.id}','dnchev-${n.id}')">
+        <div class="note-card-icon ${n.cat}" style="filter:grayscale(.4)">${NOTE_ICONS[n.cat]||'📌'}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="note-card-title" style="text-decoration:line-through;color:var(--text3)">${n.title}</div>
+          <div class="note-card-sub">Concluída em ${n.doneDate?formatDate(n.doneDate):''} · ${NOTE_LABELS[n.cat]||'Geral'}</div>
+        </div>
+        <button class="note-del-btn" style="margin-right:6px;font-size:10px;padding:3px 8px;" onclick="event.stopPropagation();toggleNoteDone(${n.id})">↩ Reabrir</button>
+        <div class="note-card-chevron" id="dnchev-${n.id}"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="note-card-body" id="dnc-${n.id}">
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;white-space:pre-wrap">${n.obs||'Sem observações.'}</div>
+        <div style="margin-top:10px;">
+          <button class="note-del-btn" onclick="deleteNote(${n.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Excluir definitivamente</button>
+        </div>
+      </div>
+    </div>`).join('');
 }
 function formatDate(ds){
   if(!ds)return'';
@@ -1457,8 +1725,56 @@ function openNewProjForm(){
 }
 function closeNewProjForm(){document.getElementById('new-proj-form').classList.remove('open');}
 
+let pendingStages=[]; // [{name, date}]
+
+function addStageToForm(){
+  const name=document.getElementById('np-stage-name').value.trim();
+  const date=document.getElementById('np-stage-date').value;
+  const time=document.getElementById('np-stage-time').value;
+  if(!name||!date)return;
+  pendingStages.push({name,date,time});
+  document.getElementById('np-stage-name').value='';
+  document.getElementById('np-stage-date').value='';
+  document.getElementById('np-stage-time').value='';
+  renderPendingStages();
+}
+
+function renderPendingStages(){
+  const list=document.getElementById('np-stages-list');
+  list.innerHTML=pendingStages.map((s,i)=>`
+    <div class="stage-item">
+      <span class="stage-item-name">${s.name}</span>
+      <span class="stage-item-date">📅 ${formatDate(s.date)}${s.time?' às '+s.time:''}</span>
+      <button class="stage-rm" onclick="pendingStages.splice(${i},1);renderPendingStages()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+}
+
+function registerProjectEventOnCalendar(title, dateStr, time, projId){
+  if(!dateStr) return;
+  const d=new Date(dateStr+'T00:00:00');
+  if(isNaN(d)) return;
+  const key=gk(d.getFullYear(),d.getMonth(),d.getDate());
+  if(!events[key]) events[key]=[];
+  if(!manualEvents[key]) manualEvents[key]=[];
+  const ev={
+    text:title, time:time||'', timeEnd:'',
+    type:'purple', obs:'', fromGcal:false,
+    _manualId:'proj_'+Date.now()+'_'+Math.random().toString(36).slice(2),
+    _projEvent:true,
+    _projId:projId||null,
+  };
+  events[key].push(ev);
+  manualEvents[key].push(ev);
+  sv('ag4_manual',manualEvents);
+}
+
 function saveNewProject(){
   const name=document.getElementById('np-name').value.trim(); if(!name)return;
+  const deadline=document.getElementById('np-deadline').value;
+  const deadlineTime=document.getElementById('np-deadline-time').value;
+  const stages=[...pendingStages];
   const proj={
     id:projIdCounter++,
     name,
@@ -1466,32 +1782,46 @@ function saveNewProject(){
     color:selectedProjColor,
     desc:document.getElementById('np-desc').value,
     obj:document.getElementById('np-obj').value,
-    tasks:[], obs:'',
+    deadline, deadlineTime,
+    stages, obs:'',
+    tags:document.getElementById('np-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
   };
   projects.unshift(proj);
   sv('ag4_proj',projects); sv('ag4_pid',projIdCounter);
-  ['np-name','np-desc','np-obj'].forEach(id=>document.getElementById(id).value='');
-  closeNewProjForm(); renderProjects();
+  if(deadline) registerProjectEventOnCalendar(`📁 ${name} — Entrega`, deadline, deadlineTime, proj.id);
+  stages.forEach(s=>registerProjectEventOnCalendar(`📁 ${name} — ${s.name}`, s.date, s.time, proj.id));
+  ['np-name','np-desc','np-obj','np-deadline','np-deadline-time','np-tags'].forEach(id=>document.getElementById(id).value='');
+  pendingStages=[];
+  renderPendingStages();
+  closeNewProjForm();
+  renderProjects();
+  render();
 }
 
 function renderProjects(){
   const grid=document.getElementById('proj-grid');
   if(!projects.length){grid.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic">Nenhum projeto ainda.</p>';return;}
-  grid.innerHTML=projects.map(p=>`
+  grid.innerHTML=projects.map(p=>{
+    const todayStr=new Date().toISOString().slice(0,10);
+    const isOverdue=p.deadline&&p.deadline<todayStr&&p.status!=='concluido';
+    const deadlineBadge=p.deadline?`<span class="proj-deadline-badge ${isOverdue?'overdue':''}">📅 ${isOverdue?'Vencido: ':'Entrega: '}${formatDate(p.deadline)}</span>`:'';
+    return `
     <div class="proj-card">
       <div class="proj-card-head" onclick="toggleProjCard('pb-${p.id}','pc-${p.id}')">
         <div class="proj-color-bar" style="background:${p.color}"></div>
         <div class="proj-info">
           <div class="proj-name">${p.name}</div>
-          <div class="proj-desc">${p.desc||'Sem descrição'}</div>
+          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;">
+            <div class="proj-desc">${p.desc||'Sem descrição'}</div>
+            ${(p.tags||[]).map(t=>`<span class="wiki-tag">#${t}</span>`).join('')}
+          </div>
         </div>
         <span class="proj-status-badge ${p.status}">${STATUS_LABELS[p.status]||p.status}</span>
+        ${deadlineBadge}
         <div class="proj-chevron" id="pc-${p.id}"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
-      ${!p.url ? `
-      <div class="proj-body" id="pb-${p.id}">` : `
-      <div class="proj-body" id="pb-${p.id}">`}
-        ${p.url ? '' : `
+      <div class="proj-body" id="pb-${p.id}">
+        ${!p.url?`
         <div>
           <div class="proj-field-label">Status</div>
           <select class="proj-select" id="pst-${p.id}" onchange="updateProjStatus(${p.id},this.value)">
@@ -1502,6 +1832,26 @@ function renderProjects(){
           </select>
         </div>
         <div>
+          <div class="proj-field-label">📅 Data e horário de entrega</div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <input type="date" class="proj-inp" id="pdeadline-${p.id}" value="${p.deadline||''}" style="flex:1;">
+            <input type="time" class="proj-inp" id="pdeadlinetime-${p.id}" value="${p.deadlineTime||''}" style="width:110px;">
+          </div>
+        </div>
+        ${p.stages&&p.stages.length?`
+        <div>
+          <div class="proj-field-label">Etapas</div>
+          <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px;">
+            ${p.stages.map((s,si)=>`
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div class="proj-stage-dot"></div>
+                <input class="proj-inp" id="pstagename-${p.id}-${si}" value="${s.name}" style="flex:1;font-size:12px;">
+                <input type="date" class="proj-inp" id="pstagedate-${p.id}-${si}" value="${s.date||''}" style="width:140px;font-size:12px;">
+                <input type="time" class="proj-inp" id="pstagetime-${p.id}-${si}" value="${s.time||''}" style="width:95px;font-size:12px;">
+              </div>`).join('')}
+          </div>
+        </div>`:''}
+        <div>
           <div class="proj-field-label">Objetivo / contexto</div>
           <textarea class="proj-ta" id="pobj-${p.id}" placeholder="Contexto do projeto…">${p.obj||''}</textarea>
         </div>
@@ -1509,12 +1859,16 @@ function renderProjects(){
           <div class="proj-field-label">Observações & notas</div>
           <textarea class="proj-ta" id="pobs-${p.id}" placeholder="Decisões, links, aprendizados…" style="min-height:100px">${p.obs||''}</textarea>
         </div>
+        <div>
+          <div class="proj-field-label">Tags</div>
+          <input class="proj-inp" id="ptags-${p.id}" value="${(p.tags||[]).join(', ')}" placeholder="cliente, time, pessoa…" style="font-size:12px;">
+        </div>
         <div class="proj-actions">
           <button class="proj-save-btn" onclick="saveProject(${p.id})">Salvar</button>
           <button class="proj-del-btn" onclick="deleteProject(${p.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Excluir</button>
           <span class="proj-saved-tag" id="pok-${p.id}">✓ salvo</span>
-        </div>`}
-        ${p.url ? `
+        </div>`:``}
+        ${p.url?`
         <div>
           <div class="proj-field-label">Objetivo</div>
           <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-top:4px;">${p.obj||''}</p>
@@ -1525,9 +1879,10 @@ function renderProjects(){
             Abrir projeto
           </a>
           <button class="proj-del-btn" onclick="deleteProject(${p.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Excluir</button>
-        </div>` : ''}
+        </div>`:''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function toggleProjCard(bodyId,chevId){
@@ -1542,9 +1897,47 @@ function saveProject(id){
   const p=projects.find(x=>x.id===id); if(!p)return;
   p.obj=document.getElementById('pobj-'+id).value;
   p.obs=document.getElementById('pobs-'+id).value;
+  const tagsEl=document.getElementById('ptags-'+id);
+  if(tagsEl) p.tags=tagsEl.value.split(',').map(t=>t.trim()).filter(Boolean);
+
+  // Save deadline
+  const dlEl=document.getElementById('pdeadline-'+id);
+  const dlTimeEl=document.getElementById('pdeadlinetime-'+id);
+  if(dlEl){ p.deadline=dlEl.value; p.deadlineTime=dlTimeEl?dlTimeEl.value:''; }
+
+  // Save stages
+  if(p.stages&&p.stages.length){
+    p.stages=p.stages.map((s,si)=>{
+      const nameEl=document.getElementById(`pstagename-${id}-${si}`);
+      const dateEl=document.getElementById(`pstagedate-${id}-${si}`);
+      const timeEl=document.getElementById(`pstagetime-${id}-${si}`);
+      return{
+        name:nameEl?nameEl.value:s.name,
+        date:dateEl?dateEl.value:s.date,
+        time:timeEl?timeEl.value:s.time||'',
+      };
+    });
+  }
+
+  // Remove all old project events from this project in manualEvents + live events
+  Object.keys(manualEvents).forEach(k=>{
+    manualEvents[k]=(manualEvents[k]||[]).filter(e=>!(e._projEvent&&e._projId===id));
+    if(!manualEvents[k].length) delete manualEvents[k];
+  });
+  Object.keys(events).forEach(k=>{
+    events[k]=(events[k]||[]).filter(e=>!(e._projEvent&&e._projId===id));
+    if(!events[k].length) delete events[k];
+  });
+
+  // Re-register deadline event
+  if(p.deadline) registerProjectEventOnCalendar(`📁 ${p.name} — Entrega`, p.deadline, p.deadlineTime, id);
+  // Re-register stage events
+  (p.stages||[]).forEach(s=>registerProjectEventOnCalendar(`📁 ${p.name} — ${s.name}`, s.date, s.time, id));
+
   sv('ag4_proj',projects);
   const tag=document.getElementById('pok-'+id); tag.classList.add('show');
-  setTimeout(()=>tag.classList.remove('show'),2000);
+  setTimeout(()=>{tag.classList.remove('show');renderProjects();setTimeout(()=>{const b=document.getElementById('pb-'+id);if(b)b.classList.add('open');},10);},1500);
+  render();
 }
 function deleteProject(id){
   if(!confirm('Excluir este projeto?'))return;
@@ -1740,19 +2133,44 @@ function openWikiForm(){
 }
 function closeWikiForm(){
   document.getElementById('wiki-new-form').classList.remove('open');
-  ['wn-title','wn-tags','wn-content'].forEach(id=>document.getElementById(id).value='');
+  ['wn-title','wn-tags','wn-problema','wn-solucao-inp','wn-dica'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  pendingWikiSolucoes=[];
+  renderPendingWikiSolucoes();
+}
+
+let pendingWikiSolucoes=[];
+function addSolucaoToForm(){
+  const txt=document.getElementById('wn-solucao-inp').value.trim();
+  if(!txt)return;
+  pendingWikiSolucoes.push(txt);
+  document.getElementById('wn-solucao-inp').value='';
+  renderPendingWikiSolucoes();
+}
+function renderPendingWikiSolucoes(){
+  const list=document.getElementById('wn-solucoes-list');
+  if(!list)return;
+  list.innerHTML=pendingWikiSolucoes.map((s,i)=>`
+    <div style="display:flex;align-items:flex-start;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;">
+      <span style="font-size:11px;color:var(--green-text);font-weight:600;margin-top:1px;">✓</span>
+      <span style="flex:1;font-size:12px;color:var(--text);white-space:pre-wrap;">${s}</span>
+      <button class="stage-rm" onclick="pendingWikiSolucoes.splice(${i},1);renderPendingWikiSolucoes()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>`).join('');
 }
 
 function saveNewWikiEntry(){
   const title = document.getElementById('wn-title').value.trim();
   if(!title) return;
   const tags = document.getElementById('wn-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  // grab pending solucao input if not yet added
+  const solucaoInp=document.getElementById('wn-solucao-inp').value.trim();
+  const solucoes=[...pendingWikiSolucoes,...(solucaoInp?[solucaoInp]:[])];
   const entry = {
     id: wikiIdCounter++,
     cat: document.getElementById('wn-cat').value,
-    title,
-    tags,
-    content: document.getElementById('wn-content').value,
+    title, tags,
+    problema: document.getElementById('wn-problema').value,
+    solucoes,
+    dica: document.getElementById('wn-dica').value,
   };
   wikiEntries.unshift(entry);
   sv('org_wiki', wikiEntries); sv('org_wiki_id', wikiIdCounter);
@@ -1767,14 +2185,18 @@ function renderWiki(){
 
   let filtered = wikiEntries.filter(e=>{
     const matchCat = wikiActiveCat === 'all' || e.cat === wikiActiveCat;
-    const matchQ = !q || e.title.toLowerCase().includes(q) || e.content.toLowerCase().includes(q) || e.tags.some(t=>t.includes(q));
+    const searchIn = [e.title, e.problema||'', e.dica||'', ...(e.solucoes||[]), e.content||'', ...(e.tags||[])].join(' ').toLowerCase();
+    const matchQ = !q || searchIn.includes(q);
     return matchCat && matchQ;
   });
 
   if(!filtered.length){ empty.style.display='block'; list.innerHTML=''; return; }
   empty.style.display='none';
 
-  list.innerHTML = filtered.map(e=>`
+  list.innerHTML = filtered.map(e=>{
+    // support legacy entries that only have content
+    const solucoes = e.solucoes || (e.content?[e.content]:[]);
+    return `
     <div class="wiki-entry">
       <div class="wiki-entry-head" onclick="toggleWikiEntry('we-${e.id}','wec-${e.id}')">
         <div class="wiki-entry-icon">${WIKI_CAT_ICONS[e.cat]||'📌'}</div>
@@ -1782,7 +2204,7 @@ function renderWiki(){
           <div class="wiki-entry-title">${highlight(e.title, q)}</div>
           <div class="wiki-entry-tags">
             <span class="wiki-tag ${e.cat}">${WIKI_CAT_LABELS[e.cat]||e.cat}</span>
-            ${e.tags.map(t=>`<span class="wiki-tag">#${t}</span>`).join('')}
+            ${(e.tags||[]).map(t=>`<span class="wiki-tag">#${t}</span>`).join('')}
           </div>
         </div>
         <div class="wiki-entry-chevron" id="wec-${e.id}">
@@ -1790,11 +2212,39 @@ function renderWiki(){
         </div>
       </div>
       <div class="wiki-entry-body" id="we-${e.id}">
-        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Conteúdo</div>
-        <textarea class="wiki-content-area" id="wc-${e.id}" spellcheck="false">${e.content||''}</textarea>
-        <div style="margin-top:8px;">
+        <!-- Problema -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:9px;color:var(--red-text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:5px;">
+            <span>🔴</span> Problema
+          </div>
+          <textarea class="wiki-content-area" id="wprob-${e.id}" style="min-height:60px;" spellcheck="false">${e.problema||''}</textarea>
+        </div>
+        <!-- Soluções -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:9px;color:var(--green-text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:5px;">
+            <span>✅</span> Soluções
+          </div>
+          <div id="wsols-${e.id}" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;">
+            ${solucoes.map((s,si)=>`
+              <div style="display:flex;align-items:flex-start;gap:6px;">
+                <span style="font-size:11px;color:var(--green-text);font-weight:600;margin-top:8px;">✓</span>
+                <textarea class="wiki-content-area" id="wsol-${e.id}-${si}" style="flex:1;min-height:55px;" spellcheck="false">${s}</textarea>
+                <button class="stage-rm" style="margin-top:8px;" onclick="removeSolucao(${e.id},${si})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+              </div>`).join('')}
+          </div>
+          <button class="wiki-del-btn" onclick="addSolucaoToEntry(${e.id})" style="font-size:11px;border-color:var(--green-border);color:var(--green-text);">+ Adicionar solução</button>
+        </div>
+        <!-- Dica -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:9px;color:var(--orange-text);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:5px;">
+            <span>💡</span> Dica / Observação
+          </div>
+          <textarea class="wiki-content-area" id="wdica-${e.id}" style="min-height:55px;" spellcheck="false">${e.dica||''}</textarea>
+        </div>
+        <!-- Tags -->
+        <div style="margin-bottom:10px;">
           <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Tags</div>
-          <input class="wiki-tag-edit" id="wt-${e.id}" value="${e.tags.join(', ')}" placeholder="tag1, tag2, tag3">
+          <input class="wiki-tag-edit" id="wt-${e.id}" value="${(e.tags||[]).join(', ')}" placeholder="tag1, tag2, tag3">
         </div>
         <div class="wiki-entry-actions">
           <button class="wiki-save-btn" onclick="saveWikiEntry(${e.id})">Salvar</button>
@@ -1805,7 +2255,53 @@ function renderWiki(){
           <span class="wiki-saved" id="ws-${e.id}">✓ salvo</span>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+}
+
+function removeSolucao(entryId, solIdx){
+  const e=wikiEntries.find(x=>x.id===entryId); if(!e)return;
+  if(!e.solucoes) e.solucoes=[];
+  e.solucoes.splice(solIdx,1);
+  sv('org_wiki',wikiEntries);
+  renderWiki();
+  setTimeout(()=>{const b=document.getElementById('we-'+entryId);if(b)b.classList.add('open');const c=document.getElementById('wec-'+entryId);if(c)c.classList.add('open');},10);
+}
+
+function addSolucaoToEntry(entryId){
+  const e=wikiEntries.find(x=>x.id===entryId); if(!e)return;
+  if(!e.solucoes) e.solucoes=[];
+  e.solucoes.push('');
+  sv('org_wiki',wikiEntries);
+  renderWiki();
+  setTimeout(()=>{
+    const b=document.getElementById('we-'+entryId);if(b)b.classList.add('open');
+    const c=document.getElementById('wec-'+entryId);if(c)c.classList.add('open');
+    // focus the new textarea
+    const newIdx=e.solucoes.length-1;
+    const ta=document.getElementById(`wsol-${entryId}-${newIdx}`);
+    if(ta)ta.focus();
+  },10);
+}
+
+function saveWikiEntry(id){
+  const e = wikiEntries.find(x=>x.id===id); if(!e) return;
+  e.problema = document.getElementById('wprob-'+id)?.value||'';
+  e.dica = document.getElementById('wdica-'+id)?.value||'';
+  // collect all solution textareas
+  const solucoes=[];
+  let si=0;
+  while(document.getElementById(`wsol-${id}-${si}`)){
+    const v=document.getElementById(`wsol-${id}-${si}`).value;
+    if(v.trim()) solucoes.push(v);
+    si++;
+  }
+  e.solucoes=solucoes;
+  e.tags = document.getElementById('wt-'+id).value.split(',').map(t=>t.trim()).filter(Boolean);
+  sv('org_wiki', wikiEntries);
+  const tag = document.getElementById('ws-'+id);
+  tag.classList.add('show');
+  setTimeout(()=>tag.classList.remove('show'), 2000);
 }
 
 function highlight(text, q){
@@ -1819,16 +2315,6 @@ function toggleWikiEntry(bodyId, chevId){
   if(!b) return;
   b.classList.toggle('open');
   c&&c.classList.toggle('open', b.classList.contains('open'));
-}
-
-function saveWikiEntry(id){
-  const e = wikiEntries.find(x=>x.id===id); if(!e) return;
-  e.content = document.getElementById('wc-'+id).value;
-  e.tags = document.getElementById('wt-'+id).value.split(',').map(t=>t.trim()).filter(Boolean);
-  sv('org_wiki', wikiEntries);
-  const tag = document.getElementById('ws-'+id);
-  tag.classList.add('show');
-  setTimeout(()=>tag.classList.remove('show'), 2000);
 }
 
 function deleteWikiEntry(id){
